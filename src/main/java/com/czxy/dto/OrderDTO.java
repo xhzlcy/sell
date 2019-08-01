@@ -1,6 +1,8 @@
 package com.czxy.dto;
 
 import com.czxy.dataobject.OrderDetail;
+import com.czxy.utils.serializer.DateLongSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 
 import javax.persistence.Transient;
@@ -40,9 +42,11 @@ public class OrderDTO {
     private Integer payStatus;
 
     /** 创建时间. */
+    @JsonSerialize(using = DateLongSerializer.class)
     private Date createTime;
 
     /** 更新时间. */
+    @JsonSerialize(using = DateLongSerializer.class)
     private Date updateTime;
 
     @Transient
