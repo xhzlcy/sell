@@ -66,8 +66,8 @@ public class OrderServiceImpl implements OrderService {
                     .add(orderAmount);
 
             //订单详情入库
-            orderDetail.setOrderId(KeyUtils.genUniqueKey());
-            orderDetail.setDetailId(orderId);
+            orderDetail.setDetailId(KeyUtils.genUniqueKey());
+            orderDetail.setOrderId(orderId);
             BeanUtils.copyProperties(productInfo,orderDetail);
             orderDetailRepository.save(orderDetail);
 
@@ -93,6 +93,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDTO findOne(String orderId) {
         OrderMaster orderMaster = orderMasterRepository.findOne(orderId);
+        System.err.println(orderMaster);
         if(orderMaster == null){
             throw new SellException(ResultEnum.ORDER_NOT_EXIST);
         }

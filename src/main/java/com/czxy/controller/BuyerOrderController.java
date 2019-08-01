@@ -6,6 +6,7 @@ import com.czxy.dto.OrderDTO;
 import com.czxy.enums.ResultEnum;
 import com.czxy.exception.SellException;
 import com.czxy.form.OrderForm;
+import com.czxy.service.BuyerService;
 import com.czxy.service.OrderService;
 import com.czxy.utils.ResultVOUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,8 @@ public class BuyerOrderController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private BuyerService buyerService;
     //创建订单
     @PostMapping("/create")
     public ResultVO<Map<String, String>> create(@Valid OrderForm orderForm,
@@ -45,32 +48,50 @@ public class BuyerOrderController {
         }
         System.err.println(orderForm);
         OrderDTO orderDTO = OrderFormOrderDTOConverter.convert(orderForm);
-        if(CollectionUtils.isEmpty(orderDTO.getOrderDetailList())){
+        if (CollectionUtils.isEmpty(orderDTO.getOrderDetailList())) {
             log.error("【创建订单】购物车不能为空");
             throw new SellException(ResultEnum.CART_EMPTY);
         }
         OrderDTO createResult = orderService.create(orderDTO);
         HashMap<String, String> map = new HashMap<>();
-        map.put("orderId",createResult.getOrderId());
+        map.put("orderId", createResult.getOrderId());
         return ResultVOUtils.success(map);
     }
+
     //订单列表
     @GetMapping("/list")
-    public ResultVO<List<OrderDTO>> list(@RequestParam("openid")String openid,
-                                         @RequestParam(value = "page",defaultValue = "0") Integer page,
-                                         @RequestParam(value = "size",defaultValue = "10")Integer size){
-        if(StringUtils.isEmpty(openid)){
+    public ResultVO<List<OrderDTO>> list(@RequestParam("openid") String openid,
+                                         @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                         @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        if (StringUtils.isEmpty(openid)) {
             log.error("【查询订单列表】openid为空");
             throw new SellException(ResultEnum.PARAM_ERROR);
         }
-        PageRequest request = new PageRequest(page,size);
+        PageRequest request = new PageRequest(page, size);
         Page<OrderDTO> orderDTOPage = orderService.findList(openid, request);
 
+        //return ResultVOUtils.success(orderDTOPage.getContent());
         return ResultVOUtils.success(orderDTOPage.getContent());
-
     }
     //订单详情
 
+    @GetMapping("/detail")
+    public ResultVO<OrderDTO> detail(@RequestParam("openid") String openid,
+                                     @RequestParam("orderId")String orderId){
+        System.err.println(orderId);
+        OrderDTO orderDTO = buyerService.findOrderOne(openid, orderId);
+
+        return ResultVOUtils.success(orderDTO);
+    }
     //取消订单
 
+    @PostMapping("/cancel")
+    public ResultVO cancel(@RequestParam("openid") String openid,
+                           @RequestParam("orderId")String orderId){
+        OrderDTO orderDTO = orderService.findOne(orderId);
+        //TODO 不安全的做法 改进
+        buyerService.cancelOrder(openid, orderId);
+        return ResultVOUtils.success();
+
+    }
 }
