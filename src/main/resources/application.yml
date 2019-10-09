@@ -3,7 +3,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     username: root
     password: 123456
-    url: jdbc:mysql://192.168.46.48/sell?characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://192.168.1.8/sell?characterEncoding=utf-8&useSSL=false
   jpa:
       show-sql: true
   jackson:
@@ -13,5 +13,9 @@ server:
 
 
 wechat:
-  mpAppId: wx7afcb2d0f7165818
+  mpAppId: wx8397f8696b538317
   mpAppSecret: 766c50cffa4120349f1f3e370a416f92
+  mchId: 1473426802
+  mchKey: T6m9iK73b0kn9g5v426MKfHQH7X8rKwb
+  keyPath: /var/weixin_cert/h5.p12
+  notifyUrl: http://a31ef7db.ngrok.io/WeChatPay/WeChatPayNotify

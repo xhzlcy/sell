@@ -1,10 +1,15 @@
 package com.czxy.dataobject;
 
+import com.czxy.enums.ProductStatusEnum;
+import com.czxy.utils.EnumUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @author xuhongzu
@@ -13,6 +18,7 @@ import java.math.BigDecimal;
  */
 @Entity
 @Data
+@DynamicUpdate
 public class ProductInfo {
     @Id
     private String productId;
@@ -27,9 +33,14 @@ public class ProductInfo {
     /** 小图 */
     private String productIcon;
     /** 状态 */
-    private Integer productStatus;
+    private Integer productStatus = ProductStatusEnum.Up.getCode();
     /** 类目编号 */
     private Integer categoryType;
+
+    private Date createTime;
+
+    private Date updateTime;
+
 
     public ProductInfo(String productId, String productName, BigDecimal productPrice, Integer productStock, String productDescription, String productIcon, Integer productStatus, Integer categoryType) {
         this.productId = productId;
@@ -43,5 +54,9 @@ public class ProductInfo {
     }
 
     public ProductInfo() {
+    }
+    @JsonIgnore
+    public ProductStatusEnum getProductStatusEnum() {
+        return EnumUtil.getByCode(productStatus, ProductStatusEnum.class);
     }
 }

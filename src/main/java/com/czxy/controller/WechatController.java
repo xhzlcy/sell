@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 /**
@@ -30,17 +29,12 @@ public class WechatController {
     private WxMpService wxMpService;
 
     @GetMapping("/authorize")
-    public String authorize(@RequestParam("returnUrl") String returnUrl) {
+    public String authorize(@RequestParam("returnUrl") String returnUrl)  {
         //1、配置
         //2、调用方法
         String url = "http://26026v4a57.wicp.vip/sell/wechat/userInfo";
-        String redirectUrl = null;
-        try {
-            redirectUrl = wxMpService.oauth2buildAuthorizationUrl(url, WxConsts.OAUTH2_SCOPE_BASE, URLEncoder.encode(returnUrl, "utf-8"));
-        } catch (UnsupportedEncodingException e) {
-            log.error("【url转换错误】url={}" + redirectUrl);
-            throw new SellException(ResultEnum.URL_CAST_ERROR);
-        }
+        String redirectUrl = wxMpService.oauth2buildAuthorizationUrl(url, WxConsts.OAUTH2_SCOPE_USER_INFO, URLEncoder.encode(returnUrl));
+
         return "redirect:" + redirectUrl;
     }
 

@@ -1,7 +1,11 @@
 package com.czxy.dto;
 
 import com.czxy.dataobject.OrderDetail;
+import com.czxy.enums.OrderStatusEnum;
+import com.czxy.enums.PayStatusEnum;
+import com.czxy.utils.EnumUtil;
 import com.czxy.utils.serializer.DateLongSerializer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 
@@ -51,4 +55,13 @@ public class OrderDTO {
 
     @Transient
     private List<OrderDetail> orderDetailList;
+
+    @JsonIgnore
+    public OrderStatusEnum getOrderStatusEnum(){
+        return EnumUtil.getByCode(orderStatus,OrderStatusEnum.class);
+    }
+    @JsonIgnore
+    public PayStatusEnum getPayStatusEnum(){
+        return EnumUtil.getByCode(payStatus,PayStatusEnum.class);
+    }
 }
